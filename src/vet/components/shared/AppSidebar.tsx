@@ -9,6 +9,7 @@ import {
   Map,
   PieChart,
   Settings2,
+  SquareChartGantt,
   SquareTerminal,
 } from "lucide-react"
 
@@ -23,6 +24,7 @@ import { TeamSwitcher } from "./TeamSwitcher"
 import { NavMain } from "./NavMain"
 import { NavProjects } from "./NavProjects"
 import { NavUser } from "./NavUser"
+import { useAuthStore } from "@/auth/store/auth.store"
 
 // This is sample data.
 const data = {
@@ -151,22 +153,32 @@ const data = {
       url: "#",
       icon: Map,
     },
+    {
+      name: "Productos",
+      url: "/vet/products",
+      icon: SquareChartGantt,
+    },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const {user}=useAuthStore();
   return (
     <Sidebar collapsible="icon" {...props}>
+
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={{avatar:'',email:user?.email??'',name:user?.fullname??''}} />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   )

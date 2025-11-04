@@ -9,11 +9,21 @@
 // } from "@/components/ui/sidebar"
 
 // import data from "./data.json"
+import { useAuthStore } from "@/auth/store/auth.store"
 import { Button } from "@/components/ui/button"
 
 export default function DashboardPage() {
+  const { authStatus, user, token } = useAuthStore();
   return (
-    <Button className="">Hola</Button>
+    <>
+      <Button className="">Hola</Button>
+      <h1>{authStatus}</h1>
+      <h2>{token}</h2>
+      <code>
+        {JSON.stringify(user)}
+      </code>
+    </>
+
     // <SidebarProvider
     //   style={
     //     {
