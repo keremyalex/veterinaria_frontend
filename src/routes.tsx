@@ -4,6 +4,7 @@ import DashboardPage from "./vet/pages/DashboardPage";
 import { AuthLayout } from "./auth/layouts/AuthLayout";
 import { LoginPage } from "./auth/pages/LoginPage";
 import { ProductsPage } from "./vet/pages/ProductsPage";
+import { authMiddleware } from "./middleware/auth.middleware";
 
 export const router=createBrowserRouter([
     {
@@ -16,6 +17,7 @@ export const router=createBrowserRouter([
     {
         path:'/vet',
         Component:VetLayout,
+        middleware:[authMiddleware],
         children:[
             {
                 index:true,

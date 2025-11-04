@@ -1,7 +1,5 @@
 import { Outlet } from "react-router"
 import {GalleryVerticalEnd} from "lucide-react";
-import { LoginForm } from "../components/login/LoginForm";
-
 export const AuthLayout = () => {
   return (
     <main className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -12,7 +10,6 @@ export const AuthLayout = () => {
           </div>
           Acme Inc.
         </a>
-        <LoginForm />
         <Outlet/>
       </div>
       

@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/auth/store/auth.store";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,24 +12,65 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Loader } from "lucide-react";
+import {useState } from "react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router";
+
+
+type IFormLoginInput = {
+  email: string,
+  password: string
+}
 
 export function LoginForm() {
+  const [loginState, setLoginState] = useState<{loading:boolean,error:boolean}>({
+    error:false,
+    loading:false
+  })
+
+  const navigate=useNavigate();
+
+  const {login}=useAuthStore();
+  const { control, formState: { errors }, handleSubmit } = useForm<IFormLoginInput>({
+    defaultValues: {
+      email: "",
+      password: ""
+    }
+  });
+
+  const onSubmit: SubmitHandler<IFormLoginInput> = async(data) => {
+    setLoginState({
+      error:false,
+      loading:true,
+    });
+
+    const success=await login(data.email,data.password);
+    if(!success){
+      setLoginState({
+        error:true,
+        loading:false,
+      })
+      return;
+    }
+    navigate('/vet/dashboard');
+  }
+
   return (
     <div>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardTitle className="text-xl">Bienvenido de regreso</CardTitle>
           <CardDescription>
-            Login with your Apple or Google account
+            Ingresa a tu cuenta
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field>
+              {/* <Field>
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -47,35 +89,62 @@ export function LoginForm() {
                   </svg>
                   Login with Google
                 </Button>
-              </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+              </Field> */}
+              {/* <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
-              </FieldSeparator>
+              </FieldSeparator> */}
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
+
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <FieldLabel htmlFor="email">Correo</FieldLabel>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                        required
+                        {...field}
+                      />
+                    </>
+                  )}
                 />
+                {errors.email && <span className="text-red-600 text-xs">{errors.email.message}</span>}
               </Field>
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+
+                <Controller
+                  control={control}
+                  name="password"
+                  rules={
+                    {
+                      required: { value: true, message: "Contrasena es requerido" },
+                    }}
+                  render={({ field }) => (
+                    <>
+                      <div className="flex items-center">
+                        <FieldLabel htmlFor="password">Contrasena</FieldLabel>
+                        <a
+                          href="#"
+                          className="ml-auto text-sm underline-offset-4 hover:underline"
+                        >
+                          Olvidaste tu contrasena?
+                        </a>
+                      </div>
+                      <Input id="password" type="password" {...field} required />
+                    </>
+                  )}
+                />
+
+                {errors.password && <span className="text-red-600 text-xs">{errors.password.message}</span>}
               </Field>
+              {loginState.error && (<span className="text-red-600 text-xs p-0">{"Credenciales invalidas,."}</span>)}
               <Field>
-                <Button type="submit">Login</Button>
+                <Button disabled={loginState.loading} type="submit"> {loginState.loading && (<Loader className="animate-spin"/>)} Ingresar</Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  No tienes una cuenta? <a href="#">Registrate</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -83,8 +152,8 @@ export function LoginForm() {
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        Al continuar, aceptas nuestros <a href="#">Terminos de Servicio</a>{" "}
+        y <a href="#">Politicas de Privacidad</a>.
       </FieldDescription>
     </div>
   )
