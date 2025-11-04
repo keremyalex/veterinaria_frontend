@@ -3,6 +3,7 @@ import { VetLayout } from "./vet/layouts/VetLayout";
 import DashboardPage from "./vet/pages/DashboardPage";
 import { AuthLayout } from "./auth/layouts/AuthLayout";
 import { LoginPage } from "./auth/pages/LoginPage";
+import { ProductsPage } from "./vet/pages/ProductsPage";
 
 export const router=createBrowserRouter([
     {
@@ -23,6 +24,10 @@ export const router=createBrowserRouter([
             {
                 path:'dashboard',
                 Component:DashboardPage
+            },
+            {
+                path:'products',
+                Component:ProductsPage
             }
         ]
     },
