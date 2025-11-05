@@ -25,9 +25,6 @@ type GetProductsQuery = {
     products: TypeProductsQuery[]
 }
 
-
-type GetProductQueryVariables = Record<number, never>;
-
 export const GET_PRODUCTS: TypedDocumentNode<GetProductsQuery> = gql`
 query GetProducts{
     products{
