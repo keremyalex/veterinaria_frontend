@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # Define un servicio llamado 'frontend'
+  frontend:
+    # 1. Indicamos a Docker Compose que use el Dockerfile en el directorio actual
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # 2. Mapeo de Puertos
+    # Sintaxis: <HOST_PORT>:<CONTAINER_PORT>
+    # Mapeamos el puerto 5000 de tu máquina (Host) al puerto 80 del contenedor (Nginx)
+    ports:
+      - "5000:80"
+      
+    # 3. Reinicio
+    # Asegura que el contenedor se reinicie si falla, excepto si se detiene manualmente
+    restart: unless-stopped
