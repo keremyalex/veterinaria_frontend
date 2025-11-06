@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_CITA = gql`
-  mutation createCita($input: CitaInput!) {
+  mutation CreateCita($input: CitaInput!) {
     createCita(input: $input) {
       id
       motivo
@@ -21,14 +21,13 @@ export const CREATE_CITA = gql`
       mascota {
         id
         nombre
-        raza
       }
     }
   }
 `;
 
 export const UPDATE_CITA = gql`
-  mutation updateCita($input: CitaUpdateInput!) {
+  mutation UpdateCita($input: CitaUpdateInput!) {
     updateCita(input: $input) {
       id
       motivo
@@ -48,14 +47,15 @@ export const UPDATE_CITA = gql`
       mascota {
         id
         nombre
-        raza
       }
     }
   }
 `;
 
 export const DELETE_CITA = gql`
-  mutation deleteCita($id: ID!) {
-    deleteCita(id: $id)
+  mutation DeleteCita($id: ID!) {
+    deleteCita(id: $id) {
+      id
+    }
   }
 `;

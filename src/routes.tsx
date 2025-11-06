@@ -6,21 +6,26 @@ import { LoginPage } from "./auth/pages/LoginPage";
 import { ProductsPage } from "./vet/pages/ProductsPage";
 import EspeciesPage from "./vet/pages/EspeciesPage";
 import ClientesPage from "./vet/pages/ClientesPage";
-import MascotasPage from "./vet/pages/MascotasPage";
-import HorariosPage from "./vet/pages/HorariosPage";
-import CitasPage from "./vet/pages/CitasPage";
-import DiagnosticosPage from "./vet/pages/DiagnosticosPage";
-import TratamientosPage from "./vet/pages/TratamientosPage";
-import VacunasPage from "./vet/pages/VacunasPage";
-import AplicacionesVacunaPage from "./vet/pages/AplicacionesVacunaPage";
+import MascotasPageWithForm from "./vet/pages/MascotasPageWithForm";
+import HorariosPageWithForm from './vet/pages/HorariosPageWithForm';
+import CitasPageWithForm from './vet/pages/CitasPageWithForm';
+import DiagnosticosPageWithForm from './vet/pages/DiagnosticosPageWithForm';
+import TratamientosPageWithForm from './vet/pages/TratamientosPageWithForm';
+import VacunasPageWithForm from './vet/pages/VacunasPageWithForm';
+import AplicacionesVacunaPageWithForm from './vet/pages/AplicacionesVacunaPageWithForm';
 import { authMiddleware } from "./middleware/auth.middleware";
+import { PublicLayout } from "./layouts/PublicLayout";
+import LandingPage from "./vet/pages/LandingPage";
 
 export const router=createBrowserRouter([
     {
         path:'/',
-        Component:()=>{return <div>Home Layout</div>},
+        Component:PublicLayout,
         children:[
-
+            {
+                index: true,
+                Component: LandingPage
+            }
         ]
     },
     {
@@ -50,32 +55,32 @@ export const router=createBrowserRouter([
             },
             {
                 path:'mascotas',
-                Component:MascotasPage
+                Component:MascotasPageWithForm
             },
             {
                 path:'horarios',
-                Component:HorariosPage
+                Component:HorariosPageWithForm
             },
             {
                 path:'citas',
-                Component:CitasPage
+                Component:CitasPageWithForm
             },
             {
                 path:'diagnosticos',
-                Component:DiagnosticosPage
+                Component:DiagnosticosPageWithForm
             },
             {
                 path:'tratamientos',
-                Component:TratamientosPage
+                Component:TratamientosPageWithForm
             },
             {
                 path:'vacunas',
-                Component:VacunasPage
+                Component:VacunasPageWithForm
             },
             {
                 path:'aplicaciones-vacuna',
-                Component:AplicacionesVacunaPage
-            }
+                Component:AplicacionesVacunaPageWithForm
+            },
         ]
     },
     {

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_DIAGNOSTICO = gql`
-  mutation createDiagnostico($input: CreateDiagnosticoInput!) {
+  mutation createDiagnostico($input: DiagnosticoInput!) {
     createDiagnostico(input: $input) {
       id
       descripcion
@@ -21,7 +21,7 @@ export const CREATE_DIAGNOSTICO = gql`
 `;
 
 export const UPDATE_DIAGNOSTICO = gql`
-  mutation updateDiagnostico($input: UpdateDiagnosticoInput!) {
+  mutation updateDiagnostico($input: DiagnosticoUpdateInput!) {
     updateDiagnostico(input: $input) {
       id
       descripcion

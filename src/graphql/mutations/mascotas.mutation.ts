@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_MASCOTA = gql`
-  mutation createMascota($input: CreateMascotaInput!) {
+  mutation createMascota($input: MascotaInput!) {
     createMascota(input: $input) {
       id
       nombre
@@ -23,7 +23,7 @@ export const CREATE_MASCOTA = gql`
 `;
 
 export const UPDATE_MASCOTA = gql`
-  mutation updateMascota($input: UpdateMascotaInput!) {
+  mutation updateMascota($input: MascotaUpdateInput!) {
     updateMascota(input: $input) {
       id
       nombre

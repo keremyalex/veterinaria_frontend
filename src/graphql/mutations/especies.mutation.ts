@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_ESPECIE = gql`
-  mutation createEspecie($input: CreateEspecieInput!) {
+  mutation createEspecie($input: EspecieInput!) {
     createEspecie(input: $input) {
       id
       descripcion
@@ -10,7 +10,7 @@ export const CREATE_ESPECIE = gql`
 `;
 
 export const UPDATE_ESPECIE = gql`
-  mutation updateEspecie($input: UpdateEspecieInput!) {
+  mutation updateEspecie($input: EspecieUpdateInput!) {
     updateEspecie(input: $input) {
       id
       descripcion

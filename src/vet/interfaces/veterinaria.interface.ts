@@ -79,12 +79,12 @@ export interface AplicacionVacuna {
   vacuna: Vacuna;
 }
 
-// Interfaces para inputs de creación
-export interface CreateEspecieInput {
+// Interfaces para inputs de creación (nombres del schema)
+export interface EspecieInput {
   descripcion: string;
 }
 
-export interface CreateClienteInput {
+export interface ClienteInput {
   nombre: string;
   apellidos: string;
   email: string;
@@ -92,7 +92,7 @@ export interface CreateClienteInput {
   fechaNacimiento: string;
 }
 
-export interface CreateMascotaInput {
+export interface MascotaInput {
   nombre: string;
   sexo: string;
   raza: string;
@@ -102,13 +102,13 @@ export interface CreateMascotaInput {
   especieId: string;
 }
 
-export interface CreateHorarioInput {
+export interface HorarioInput {
   dia: string;
   horaInicio: string;
   horaFin: string;
 }
 
-export interface CreateCitaInput {
+export interface CitaInput {
   motivo: string;
   fechaProgramada: string;
   clienteId: string;
@@ -116,45 +116,46 @@ export interface CreateCitaInput {
   mascotaId: string;
 }
 
-export interface CreateDiagnosticoInput {
+export interface DiagnosticoInput {
   descripcion: string;
   observaciones?: string;
   mascotaId: string;
 }
 
-export interface CreateTratamientoInput {
+export interface TratamientoInput {
   descripcion: string;
   fechaInicio: string;
-  fechaFin: string;
-  instrucciones: string;
+  fechaFin?: string;
+  instrucciones?: string;
   estado: string;
   diagnosticoId: string;
 }
 
-export interface CreateVacunaInput {
+export interface VacunaInput {
   nombre: string;
   descripcion: string;
-  duracionMeses: number;
+  duracionMeses?: number;
   laboratorio: string;
-  edadMinimaDias: number;
+  edadMinimaDias?: number;
 }
 
-export interface AplicarVacunaInput {
-  mascotaId: string;
-  vacunaId: string;
+export interface MascotaVacunaInput {
   fechaAplicacion: string;
+  fechaProximaDosis?: string;
   veterinario: string;
   observaciones?: string;
-  lote: string;
+  lote?: string;
+  mascotaId: string;
+  vacunaId: string;
 }
 
-// Interfaces para inputs de actualización
-export interface UpdateEspecieInput {
+// Interfaces para inputs de actualización (nombres del schema) 
+export interface EspecieUpdateInput {
   id: string;
   descripcion: string;
 }
 
-export interface UpdateClienteInput {
+export interface ClienteUpdateInput {
   id: string;
   nombre: string;
   apellidos: string;
@@ -163,7 +164,7 @@ export interface UpdateClienteInput {
   fechaNacimiento: string;
 }
 
-export interface UpdateMascotaInput {
+export interface MascotaUpdateInput {
   id: string;
   nombre: string;
   sexo: string;
@@ -174,44 +175,55 @@ export interface UpdateMascotaInput {
   especieId: string;
 }
 
-export interface UpdateHorarioInput {
+export interface HorarioUpdateInput {
   id: string;
   dia: string;
   horaInicio: string;
   horaFin: string;
 }
 
-export interface UpdateCitaInput {
+export interface CitaUpdateInput {
   id: string;
-  motivo: string;
-  fechaProgramada: string;
-  clienteId: string;
-  horarioId: string;
-  mascotaId: string;
+  motivo?: string;
+  fechaProgramada?: string;
+  clienteId?: string;
+  horarioId?: string;
+  mascotaId?: string;
 }
 
-export interface UpdateDiagnosticoInput {
+export interface DiagnosticoUpdateInput {
   id: string;
-  descripcion: string;
+  descripcion?: string;
   observaciones?: string;
-  mascotaId: string;
+  mascotaId?: string;
 }
 
-export interface UpdateTratamientoInput {
+export interface TratamientoUpdateInput {
   id: string;
-  descripcion: string;
-  fechaInicio: string;
-  fechaFin: string;
-  instrucciones: string;
-  estado: string;
-  diagnosticoId: string;
+  descripcion?: string;
+  fechaInicio?: string;
+  fechaFin?: string;
+  instrucciones?: string;
+  estado?: string;
+  diagnosticoId?: string;
 }
 
-export interface UpdateVacunaInput {
+export interface VacunaUpdateInput {
   id: string;
-  nombre: string;
-  descripcion: string;
-  duracionMeses: number;
-  laboratorio: string;
-  edadMinimaDias: number;
+  nombre?: string;
+  descripcion?: string;
+  duracionMeses?: number;
+  laboratorio?: string;
+  edadMinimaDias?: number;
+}
+
+export interface MascotaVacunaUpdateInput {
+  id: string;
+  fechaAplicacion?: string;
+  fechaProximaDosis?: string;
+  veterinario?: string;
+  observaciones?: string;
+  lote?: string;
+  mascotaId?: string;
+  vacunaId?: string;
 }

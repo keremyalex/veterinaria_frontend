@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_CITA = gql`
-  mutation createCita($input: CitaInput!) {
-    createCita(input: $input) {
+export const GET_CITAS = gql`
+  query GetCitas {
+    citas {
       id
       motivo
       fechaProgramada
@@ -11,6 +11,8 @@ export const CREATE_CITA = gql`
         id
         nombre
         apellidos
+        email
+        telefono
       }
       horario {
         id
@@ -21,15 +23,17 @@ export const CREATE_CITA = gql`
       mascota {
         id
         nombre
+        sexo
         raza
+        peso
       }
     }
   }
 `;
 
-export const UPDATE_CITA = gql`
-  mutation updateCita($input: CitaUpdateInput!) {
-    updateCita(input: $input) {
+export const GET_CITA_BY_ID = gql`
+  query GetCitaById($id: ID!) {
+    cita(id: $id) {
       id
       motivo
       fechaProgramada
@@ -38,6 +42,8 @@ export const UPDATE_CITA = gql`
         id
         nombre
         apellidos
+        email  
+        telefono
       }
       horario {
         id
@@ -48,14 +54,10 @@ export const UPDATE_CITA = gql`
       mascota {
         id
         nombre
+        sexo
         raza
+        peso
       }
     }
-  }
-`;
-
-export const DELETE_CITA = gql`
-  mutation deleteCita($id: ID!) {
-    deleteCita(id: $id)
   }
 `;

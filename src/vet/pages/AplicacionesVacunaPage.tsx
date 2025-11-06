@@ -9,7 +9,7 @@ export default function AplicacionesVacunaPage() {
   if (loading) return <div className="p-6">Cargando aplicaciones de vacunas...</div>;
   if (error) return <div className="p-6">Error: {error.message}</div>;
 
-  const aplicaciones = (data as any)?.aplicacionesVacuna || [];
+  const aplicaciones = (data as any)?.mascotaVacunas || [];
 
   return (
     <div className="p-6">

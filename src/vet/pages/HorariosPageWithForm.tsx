@@ -7,59 +7,62 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GET_ESPECIES } from '@/graphql/queries/especies.query';
-import { CREATE_ESPECIE, UPDATE_ESPECIE, DELETE_ESPECIE } from '@/graphql/mutations/especies.mutation';
+import { NativeSelect } from '@/components/ui/native-select';
+import { GET_HORARIOS } from '@/graphql/queries/horarios.query';
+import { CREATE_HORARIO, UPDATE_HORARIO, DELETE_HORARIO } from '@/graphql/mutations/horarios.mutation';
 import { toast } from 'sonner';
 
-export default function EspeciesPage() {
+export default function HorariosPageWithForm() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingEspecie, setEditingEspecie] = useState<any>(null);
+  const [editingHorario, setEditingHorario] = useState<any>(null);
   const [formData, setFormData] = useState({
-    descripcion: ''
+    dia: '',
+    horaInicio: '',
+    horaFin: ''
   });
 
-  const { data, loading, refetch } = useQuery(GET_ESPECIES);
-  const [createEspecie] = useMutation(CREATE_ESPECIE);
-  const [updateEspecie] = useMutation(UPDATE_ESPECIE);
-  const [deleteEspecie] = useMutation(DELETE_ESPECIE);
+  const { data, loading, refetch } = useQuery(GET_HORARIOS);
+  const [createHorario] = useMutation(CREATE_HORARIO);
+  const [updateHorario] = useMutation(UPDATE_HORARIO);
+  const [deleteHorario] = useMutation(DELETE_HORARIO);
 
-  const especies = (data as any)?.especies || [];
+  const horarios = (data as any)?.horarios || [];
+
+  const diasSemana = [
+    'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      if (editingEspecie) {
-        console.log('Input para actualizar:', { id: editingEspecie.id, ...formData });
-        const result = await updateEspecie({
+      if (editingHorario) {
+        await updateHorario({
           variables: {
             input: {
-              id: editingEspecie.id,
+              id: editingHorario.id,
               ...formData
             }
           }
         });
-        console.log('Resultado de actualización:', result);
-        toast.success('Especie actualizada correctamente');
+        toast.success('Horario actualizado correctamente');
       } else {
-        console.log('Input para crear:', formData);
-        const result = await createEspecie({
+        await createHorario({
           variables: {
             input: formData
           }
         });
-        console.log('Resultado de creación:', result);
-        toast.success('Especie creada correctamente');
+        toast.success('Horario creado correctamente');
       }
       
       setIsDialogOpen(false);
-      setEditingEspecie(null);
-      setFormData({ descripcion: '' });
+      setEditingHorario(null);
+      resetForm();
       refetch();
     } catch (error: any) {
       console.error('Error completo:', error);
       
-      let errorMessage = editingEspecie ? 'Error al actualizar la especie' : 'Error al crear la especie';
+      let errorMessage = editingHorario ? 'Error al actualizar el horario' : 'Error al crear el horario';
       if (error?.graphQLErrors?.length > 0) {
         errorMessage = error.graphQLErrors[0].message;
       } else if (error?.networkError) {
@@ -72,25 +75,27 @@ export default function EspeciesPage() {
     }
   };
 
-  const handleEdit = (especie: any) => {
-    setEditingEspecie(especie);
+  const handleEdit = (horario: any) => {
+    setEditingHorario(horario);
     setFormData({
-      descripcion: especie.descripcion
+      dia: horario.dia,
+      horaInicio: horario.horaInicio,
+      horaFin: horario.horaFin
     });
     setIsDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta especie?')) {
+    if (confirm('¿Estás seguro de que deseas eliminar este horario?')) {
       try {
-        await deleteEspecie({
+        await deleteHorario({
           variables: { id }
         });
-        toast.success('Especie eliminada correctamente');
+        toast.success('Horario eliminado correctamente');
         refetch();
       } catch (error: any) {
         console.error('Error:', error);
-        let errorMessage = 'Error al eliminar la especie';
+        let errorMessage = 'Error al eliminar el horario';
         if (error?.graphQLErrors?.length > 0) {
           errorMessage = error.graphQLErrors[0].message;
         } else if (error?.message) {
@@ -102,16 +107,20 @@ export default function EspeciesPage() {
   };
 
   const resetForm = () => {
-    setFormData({ descripcion: '' });
-    setEditingEspecie(null);
+    setFormData({
+      dia: '',
+      horaInicio: '',
+      horaFin: ''
+    });
+    setEditingHorario(null);
   };
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading) return <div className="p-6">Cargando horarios...</div>;
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Especies</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Horarios</h1>
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
           setIsDialogOpen(open);
           if (!open) resetForm();
@@ -119,25 +128,55 @@ export default function EspeciesPage() {
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Nueva Especie
+              Nuevo Horario
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
-                {editingEspecie ? 'Editar Especie' : 'Nueva Especie'}
+                {editingHorario ? 'Editar Horario' : 'Nuevo Horario'}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="descripcion">Descripción</Label>
+                <Label htmlFor="dia">Día de la Semana</Label>
+                <NativeSelect
+                  id="dia"
+                  value={formData.dia}
+                  onChange={(e) => setFormData({ ...formData, dia: e.target.value })}
+                  required
+                >
+                  <option value="">Seleccionar día</option>
+                  {diasSemana.map((dia) => (
+                    <option key={dia} value={dia}>
+                      {dia}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </div>
+
+              <div>
+                <Label htmlFor="horaInicio">Hora de Inicio</Label>
                 <Input
-                  id="descripcion"
-                  value={formData.descripcion}
-                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                  id="horaInicio"
+                  type="time"
+                  value={formData.horaInicio}
+                  onChange={(e) => setFormData({ ...formData, horaInicio: e.target.value })}
                   required
                 />
               </div>
+
+              <div>
+                <Label htmlFor="horaFin">Hora de Fin</Label>
+                <Input
+                  id="horaFin"
+                  type="time"
+                  value={formData.horaFin}
+                  onChange={(e) => setFormData({ ...formData, horaFin: e.target.value })}
+                  required
+                />
+              </div>
+
               <div className="flex justify-end space-x-2">
                 <Button
                   type="button"
@@ -150,7 +189,7 @@ export default function EspeciesPage() {
                   Cancelar
                 </Button>
                 <Button type="submit">
-                  {editingEspecie ? 'Actualizar' : 'Crear'}
+                  {editingHorario ? 'Actualizar' : 'Crear'}
                 </Button>
               </div>
             </form>
@@ -158,39 +197,39 @@ export default function EspeciesPage() {
         </Dialog>
       </div>
 
-
-
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Especies</CardTitle>
+          <CardTitle>Lista de Horarios</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Descripción</TableHead>
+                <TableHead>Día</TableHead>
+                <TableHead>Hora Inicio</TableHead>
+                <TableHead>Hora Fin</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {especies.map((especie: any) => (
-                <TableRow key={especie.id}>
-                  <TableCell>{especie.id}</TableCell>
-                  <TableCell>{especie.descripcion}</TableCell>
+              {horarios.map((horario: any) => (
+                <TableRow key={horario.id}>
+                  <TableCell className="font-medium">{horario.dia}</TableCell>
+                  <TableCell>{horario.horaInicio}</TableCell>
+                  <TableCell>{horario.horaFin}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleEdit(especie)}
+                        onClick={() => handleEdit(horario)}
                       >
                         <Pencil className="w-4 h-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDelete(especie.id)}
+                        onClick={() => handleDelete(horario.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

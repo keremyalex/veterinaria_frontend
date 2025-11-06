@@ -15,7 +15,7 @@ export const GET_VACUNAS = gql`
 
 export const GET_APLICACIONES_VACUNA = gql`
   query {
-    aplicacionesVacuna {
+    mascotaVacunas {
       id
       fechaAplicacion
       fechaProximaDosis
