@@ -4,13 +4,19 @@ import {
   BookOpen,
   Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
   Settings2,
   SquareChartGantt,
   SquareTerminal,
+  Users,
+  Heart,
+  Clock,
+  Calendar,
+  Stethoscope,
+  Pill,
+  Syringe,
+  Activity,
+  Dog,
 } from "lucide-react"
 
 import {
@@ -139,24 +145,54 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-    {
       name: "Productos",
       url: "/vet/products",
       icon: SquareChartGantt,
+    },
+    {
+      name: "Especies",
+      url: "/vet/especies",
+      icon: Activity,
+    },
+    {
+      name: "Clientes",
+      url: "/vet/clientes",
+      icon: Users,
+    },
+    {
+      name: "Mascotas",
+      url: "/vet/mascotas",
+      icon: Dog,
+    },
+    {
+      name: "Horarios",
+      url: "/vet/horarios",
+      icon: Clock,
+    },
+    {
+      name: "Citas",
+      url: "/vet/citas",
+      icon: Calendar,
+    },
+    {
+      name: "Diagnósticos",
+      url: "/vet/diagnosticos",
+      icon: Stethoscope,
+    },
+    {
+      name: "Tratamientos",
+      url: "/vet/tratamientos",
+      icon: Pill,
+    },
+    {
+      name: "Vacunas",
+      url: "/vet/vacunas",
+      icon: Heart,
+    },
+    {
+      name: "Aplicaciones Vacuna",
+      url: "/vet/aplicaciones-vacuna",
+      icon: Syringe,
     },
   ],
 }
