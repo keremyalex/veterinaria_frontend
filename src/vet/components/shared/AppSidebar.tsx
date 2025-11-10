@@ -17,6 +17,7 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { NavProjects } from "./NavProjects"
 import { NavUser } from "./NavUser"
@@ -79,14 +80,18 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const {user}=useAuthStore();
+  const { user } = useAuthStore();
+  const { state } = useSidebar();
+  
   return (
     <Sidebar collapsible="icon" {...props}>
 
       <SidebarHeader>
         <div className="flex items-center gap-2 px-4 py-2">
           <Heart className="h-6 w-6 text-red-500" />
-          <span className="font-semibold text-lg">VetSystem</span>
+          {state !== "collapsed" && (
+            <span className="font-semibold text-lg">VetSystem</span>
+          )}
         </div>
       </SidebarHeader>
 
