@@ -9,6 +9,9 @@ import {
   Syringe,
   Activity,
   Dog,
+  Settings,
+  ShoppingCart,
+  UserCog,
 } from "lucide-react"
 
 import {
@@ -19,62 +22,94 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { NavProjects } from "./NavProjects"
+import { NavMain } from "./NavMain"
 import { NavUser } from "./NavUser"
 import { useAuthStore } from "@/auth/store/auth.store"
 
-// Data para el sistema veterinario
+// Data para el sistema veterinario organizado por módulos
 const data = {
-  projects: [
+  navMain: [
     {
-      name: "Doctores",
-      url: "/vet/doctores",
-      icon: Users,
-    },
-    {
-      name: "Clientes", 
-      url: "/vet/clientes",
-      icon: Users,
-    },
-    {
-      name: "Especies",
-      url: "/vet/especies",
-      icon: Activity,
-    },
-    {
-      name: "Mascotas",
-      url: "/vet/mascotas",
-      icon: Dog,
-    },
-    {
-      name: "Horarios",
-      url: "/vet/horarios",
-      icon: Clock,
-    },
-    {
-      name: "Citas",
-      url: "/vet/citas",
-      icon: Calendar,
-    },
-    {
-      name: "Diagnósticos",
-      url: "/vet/diagnosticos",
+      title: "Gestión Clínica",
+      url: "#",
       icon: Stethoscope,
+      isActive: true,
+      items: [
+        {
+          name: "Doctores",
+          url: "/vet/doctores",
+          icon: Users,
+        },
+        {
+          name: "Clientes", 
+          url: "/vet/clientes",
+          icon: Users,
+        },
+        {
+          name: "Especies",
+          url: "/vet/especies",
+          icon: Activity,
+        },
+        {
+          name: "Mascotas",
+          url: "/vet/mascotas",
+          icon: Dog,
+        },
+        {
+          name: "Horarios",
+          url: "/vet/horarios",
+          icon: Clock,
+        },
+        {
+          name: "Citas",
+          url: "/vet/citas",
+          icon: Calendar,
+        },
+        {
+          name: "Diagnósticos",
+          url: "/vet/diagnosticos",
+          icon: Stethoscope,
+        },
+        {
+          name: "Tratamientos",
+          url: "/vet/tratamientos",
+          icon: Heart,
+        },
+        {
+          name: "Vacunas",
+          url: "/vet/vacunas",
+          icon: Pill,
+        },
+        {
+          name: "Vacunación",
+          url: "/vet/vacunacion",
+          icon: Syringe,
+        },
+      ],
     },
     {
-      name: "Tratamientos",
-      url: "/vet/tratamientos",
-      icon: Heart,
+      title: "Administración",
+      url: "#",
+      icon: Settings,
+      items: [
+        {
+          name: "Usuarios",
+          url: "/vet/usuarios",
+          icon: UserCog,
+        },
+      ],
     },
     {
-      name: "Vacunas",
-      url: "/vet/vacunas",
-      icon: Pill,
-    },
-    {
-      name: "Vacunación",
-      url: "/vet/vacunacion",
-      icon: Syringe,
+      title: "Ventas",
+      url: "#",
+      icon: ShoppingCart,
+      items: [
+        {
+          name: "Panel de Ventas",
+          url: "/vet/ventas",
+          icon: ShoppingCart,
+        },
+      ],
     },
   ],
 }
@@ -96,7 +131,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} />
       </SidebarContent>
 
       <SidebarFooter>

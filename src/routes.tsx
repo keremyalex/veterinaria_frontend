@@ -13,6 +13,8 @@ import DiagnosticosPage from "./vet/pages/DiagnosticosPage";
 import TratamientosPage from "./vet/pages/TratamientosPage";
 import VacunasPage from "./vet/pages/VacunasPage";
 import VacunacionPage from "./vet/pages/VacunacionPage";
+import { UsuariosPage } from "./vet/pages/UsuariosPage";
+import { VentasPage } from "./vet/pages/VentasPage";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { PublicLayout } from "./layouts/PublicLayout";
 import LandingPage from "./vet/pages/LandingPage";
@@ -80,6 +82,14 @@ export const router=createBrowserRouter([
             {
                 path:'vacunacion',
                 Component:VacunacionPage
+            },
+            {
+                path:'usuarios',
+                Component:UsuariosPage
+            },
+            {
+                path:'ventas',
+                Component:VentasPage
             },
         ]
     },
