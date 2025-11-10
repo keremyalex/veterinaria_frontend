@@ -1,6 +1,5 @@
 import * as React from "react"
 import {
-  SquareChartGantt,
   Users,
   Heart,
   Clock,
@@ -27,19 +26,19 @@ import { useAuthStore } from "@/auth/store/auth.store"
 const data = {
   projects: [
     {
-      name: "Productos",
-      url: "/vet/products",
-      icon: SquareChartGantt,
+      name: "Doctores",
+      url: "/vet/doctores",
+      icon: Users,
+    },
+    {
+      name: "Clientes", 
+      url: "/vet/clientes",
+      icon: Users,
     },
     {
       name: "Especies",
       url: "/vet/especies",
       icon: Activity,
-    },
-    {
-      name: "Clientes",
-      url: "/vet/clientes",
-      icon: Users,
     },
     {
       name: "Mascotas",
@@ -64,16 +63,16 @@ const data = {
     {
       name: "Tratamientos",
       url: "/vet/tratamientos",
-      icon: Pill,
+      icon: Heart,
     },
     {
       name: "Vacunas",
       url: "/vet/vacunas",
-      icon: Heart,
+      icon: Pill,
     },
     {
-      name: "Aplicaciones Vacuna",
-      url: "/vet/aplicaciones-vacuna",
+      name: "Vacunación",
+      url: "/vet/vacunacion",
       icon: Syringe,
     },
   ],

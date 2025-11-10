@@ -7,41 +7,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Trash2, Edit, Plus } from 'lucide-react';
-import { GET_CLIENTES } from '@/graphql/queries/clinic.queries';
-import { CREAR_CLIENTE, ACTUALIZAR_CLIENTE, ELIMINAR_CLIENTE } from '@/graphql/mutations/clinic.mutations';
-import type { Cliente, ClienteInput, ClienteUpdateInput } from '@/vet/interfaces/clinic.interface';
+import { GET_DOCTORES } from '@/graphql/queries/clinic.queries';
+import { CREAR_DOCTOR, ACTUALIZAR_DOCTOR, ELIMINAR_DOCTOR } from '@/graphql/mutations/clinic.mutations';
+import type { Doctor, DoctorInput, DoctorUpdateInput } from '@/vet/interfaces/clinic.interface';
 
 interface FormData {
-  ci: string;
   nombre: string;
   apellido: string;
+  ci: string;
   telefono: string;
-  fotourl?: string;
+  email: string;
+  fotourl: string;
 }
 
 const initialFormData: FormData = {
-  ci: '',
   nombre: '',
   apellido: '',
+  ci: '',
   telefono: '',
+  email: '',
   fotourl: ''
 };
 
-export default function ClientesPage() {
+export default function DoctoresPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [editingCliente, setEditingCliente] = useState<Cliente | null>(null);
+  const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
 
-  const { data: clientesData, loading, error, refetch } = useQuery(GET_CLIENTES);
-  const [crearCliente] = useMutation(CREAR_CLIENTE);
-  const [actualizarCliente] = useMutation(ACTUALIZAR_CLIENTE);
-  const [eliminarCliente] = useMutation(ELIMINAR_CLIENTE);
+  const { data: doctoresData, loading, error, refetch } = useQuery(GET_DOCTORES);
+  const [crearDoctor] = useMutation(CREAR_DOCTOR);
+  const [actualizarDoctor] = useMutation(ACTUALIZAR_DOCTOR);
+  const [eliminarDoctor] = useMutation(ELIMINAR_DOCTOR);
 
   // Datos ordenados - versión más robusta
-  const rawClientes = (clientesData as any)?.clientes || [];
-  const clientes: Cliente[] = React.useMemo(() => {
-    return [...rawClientes]
-      .sort((a: Cliente, b: Cliente) => {
+  const rawDoctores = (doctoresData as any)?.doctores || [];
+  const doctores: Doctor[] = React.useMemo(() => {
+    return [...rawDoctores]
+      .sort((a: Doctor, b: Doctor) => {
         // Intentar primero como números
         const numA = Number(a.id);
         const numB = Number(b.id);
@@ -54,7 +56,7 @@ export default function ClientesPage() {
         // Si no son números, comparar como strings
         return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
       });
-  }, [rawClientes]);
+  }, [rawDoctores]);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -62,36 +64,38 @@ export default function ClientesPage() {
 
   const resetForm = () => {
     setFormData(initialFormData);
-    setEditingCliente(null);
+    setEditingDoctor(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (editingCliente) {
-        const updateInput: ClienteUpdateInput = {
-          id: parseInt(editingCliente.id),
-          ci: formData.ci,
+      if (editingDoctor) {
+        const updateInput: DoctorUpdateInput = {
+          id: parseInt(editingDoctor.id),
           nombre: formData.nombre,
           apellido: formData.apellido,
+          ci: formData.ci,
           telefono: formData.telefono,
-          fotourl: formData.fotourl
+          email: formData.email,
+          fotourl: formData.fotourl || undefined
         };
 
-        await actualizarCliente({
+        await actualizarDoctor({
           variables: { input: updateInput }
         });
       } else {
-        const clienteInput: ClienteInput = {
-          ci: formData.ci,
+        const doctorInput: DoctorInput = {
           nombre: formData.nombre,
           apellido: formData.apellido,
+          ci: formData.ci,
           telefono: formData.telefono,
-          fotourl: formData.fotourl
+          email: formData.email,
+          fotourl: formData.fotourl || undefined
         };
 
-        await crearCliente({
-          variables: { input: clienteInput }
+        await crearDoctor({
+          variables: { input: doctorInput }
         });
       }
 
@@ -99,31 +103,32 @@ export default function ClientesPage() {
       resetForm();
       setIsOpen(false);
     } catch (error) {
-      console.error('Error al guardar cliente:', error);
+      console.error('Error al guardar doctor:', error);
     }
   };
 
-  const handleEdit = (cliente: Cliente) => {
-    setEditingCliente(cliente);
+  const handleEdit = (doctor: Doctor) => {
+    setEditingDoctor(doctor);
     setFormData({
-      ci: cliente.ci,
-      nombre: cliente.nombre,
-      apellido: cliente.apellido,
-      telefono: cliente.telefono,
-      fotourl: cliente.fotourl || ''
+      nombre: doctor.nombre,
+      apellido: doctor.apellido,
+      ci: doctor.ci,
+      telefono: doctor.telefono,
+      email: doctor.email,
+      fotourl: doctor.fotourl || ''
     });
     setIsOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
+    if (window.confirm('¿Estás seguro de que quieres eliminar este doctor?')) {
       try {
-        await eliminarCliente({
+        await eliminarDoctor({
           variables: { id }
         });
         refetch();
       } catch (error) {
-        console.error('Error al eliminar cliente:', error);
+        console.error('Error al eliminar doctor:', error);
       }
     }
   };
@@ -135,54 +140,53 @@ export default function ClientesPage() {
     <div className="container mx-auto py-6">
       <Card>
         <CardHeader>
-          <CardTitle>Gestión de Clientes</CardTitle>
+          <CardTitle>Gestión de Doctores</CardTitle>
           <CardDescription>
-            Administra los clientes de la clínica veterinaria
+            Administra la información de los doctores de la clínica veterinaria
           </CardDescription>
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button onClick={resetForm}>
                 <Plus className="mr-2 h-4 w-4" />
-                Agregar Cliente
+                Agregar Doctor
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>
-                  {editingCliente ? 'Editar Cliente' : 'Agregar Nuevo Cliente'}
+                  {editingDoctor ? 'Editar Doctor' : 'Agregar Nuevo Doctor'}
                 </DialogTitle>
                 <DialogDescription>
-                  {editingCliente ? 'Modifica' : 'Completa'} la información del cliente aquí. Haz clic en guardar cuando termines.
+                  {editingDoctor ? 'Modifica' : 'Completa'} la información del doctor aquí. Haz clic en guardar cuando termines.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nombre">Nombre</Label>
+                    <Input
+                      id="nombre"
+                      value={formData.nombre}
+                      onChange={(e) => handleInputChange('nombre', e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="apellido">Apellido</Label>
+                    <Input
+                      id="apellido"
+                      value={formData.apellido}
+                      onChange={(e) => handleInputChange('apellido', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="ci">Cédula de Identidad</Label>
                   <Input
                     id="ci"
                     value={formData.ci}
                     onChange={(e) => handleInputChange('ci', e.target.value)}
-                    placeholder="Número de identificación"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nombre">Nombre</Label>
-                  <Input
-                    id="nombre"
-                    value={formData.nombre}
-                    onChange={(e) => handleInputChange('nombre', e.target.value)}
-                    placeholder="Nombre del cliente"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="apellido">Apellido</Label>
-                  <Input
-                    id="apellido"
-                    value={formData.apellido}
-                    onChange={(e) => handleInputChange('apellido', e.target.value)}
-                    placeholder="Apellido del cliente"
                     required
                   />
                 </div>
@@ -192,17 +196,26 @@ export default function ClientesPage() {
                     id="telefono"
                     value={formData.telefono}
                     onChange={(e) => handleInputChange('telefono', e.target.value)}
-                    placeholder="Número de contacto"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="fotourl">URL Foto (Opcional)</Label>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fotourl">URL de Foto (opcional)</Label>
                   <Input
                     id="fotourl"
                     value={formData.fotourl}
                     onChange={(e) => handleInputChange('fotourl', e.target.value)}
-                    placeholder="URL de la imagen del cliente"
+                    placeholder="https://..."
                   />
                 </div>
                 <div className="flex justify-end space-x-2">
@@ -214,7 +227,7 @@ export default function ClientesPage() {
                     Cancelar
                   </Button>
                   <Button type="submit">
-                    {editingCliente ? 'Actualizar' : 'Crear'} Cliente
+                    {editingDoctor ? 'Actualizar' : 'Crear'} Doctor
                   </Button>
                 </div>
               </form>
@@ -226,32 +239,36 @@ export default function ClientesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>Cédula</TableHead>
-                <TableHead>Nombre Completo</TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Apellido</TableHead>
+                <TableHead>CI</TableHead>
                 <TableHead>Teléfono</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clientes.map((cliente) => (
-                <TableRow key={cliente.id}>
-                  <TableCell className="font-medium">{cliente.id}</TableCell>
-                  <TableCell>{cliente.ci}</TableCell>
-                  <TableCell>{cliente.nombre} {cliente.apellido}</TableCell>
-                  <TableCell>{cliente.telefono}</TableCell>
+              {doctores.map((doctor) => (
+                <TableRow key={doctor.id}>
+                  <TableCell className="font-medium">{doctor.id}</TableCell>
+                  <TableCell>{doctor.nombre}</TableCell>
+                  <TableCell>{doctor.apellido}</TableCell>
+                  <TableCell>{doctor.ci}</TableCell>
+                  <TableCell>{doctor.telefono}</TableCell>
+                  <TableCell>{doctor.email}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleEdit(cliente)}
+                        onClick={() => handleEdit(doctor)}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => handleDelete(cliente.id)}
+                        onClick={() => handleDelete(doctor.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -1,168 +1,166 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GET_ESPECIES } from '@/graphql/queries/especies.query';
-import { CREATE_ESPECIE, UPDATE_ESPECIE, DELETE_ESPECIE } from '@/graphql/mutations/especies.mutation';
-import { toast } from 'sonner';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Trash2, Edit, Plus } from 'lucide-react';
+import { GET_ESPECIES } from '@/graphql/queries/clinic.queries';
+import { CREAR_ESPECIE, ACTUALIZAR_ESPECIE, ELIMINAR_ESPECIE } from '@/graphql/mutations/clinic.mutations';
+import type { Especie, EspecieInput, EspecieUpdateInput } from '@/vet/interfaces/clinic.interface';
+
+interface FormData {
+  descripcion: string;
+}
+
+const initialFormData: FormData = {
+  descripcion: ''
+};
 
 export default function EspeciesPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingEspecie, setEditingEspecie] = useState<any>(null);
-  const [formData, setFormData] = useState({
-    descripcion: ''
-  });
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [editingEspecie, setEditingEspecie] = useState<Especie | null>(null);
 
-  const { data, loading, refetch } = useQuery(GET_ESPECIES);
-  const [createEspecie] = useMutation(CREATE_ESPECIE);
-  const [updateEspecie] = useMutation(UPDATE_ESPECIE);
-  const [deleteEspecie] = useMutation(DELETE_ESPECIE);
+  const { data: especiesData, loading, error, refetch } = useQuery(GET_ESPECIES);
+  const [crearEspecie] = useMutation(CREAR_ESPECIE);
+  const [actualizarEspecie] = useMutation(ACTUALIZAR_ESPECIE);
+  const [eliminarEspecie] = useMutation(ELIMINAR_ESPECIE);
 
-  const especies = (data as any)?.especies || [];
+  // Datos ordenados - versión más robusta
+  const rawEspecies = (especiesData as any)?.especies || [];
+  const especies: Especie[] = React.useMemo(() => {
+    return [...rawEspecies]
+      .sort((a: Especie, b: Especie) => {
+        // Intentar primero como números
+        const numA = Number(a.id);
+        const numB = Number(b.id);
+        
+        // Si ambos son números válidos
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numB - numA; // Descendente
+        }
+        
+        // Si no son números, comparar como strings
+        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
+      });
+  }, [rawEspecies]);
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setEditingEspecie(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       if (editingEspecie) {
-        console.log('Input para actualizar:', { id: editingEspecie.id, ...formData });
-        const result = await updateEspecie({
-          variables: {
-            input: {
-              id: editingEspecie.id,
-              ...formData
-            }
-          }
+        const updateInput: EspecieUpdateInput = {
+          id: parseInt(editingEspecie.id),
+          descripcion: formData.descripcion
+        };
+
+        await actualizarEspecie({
+          variables: { input: updateInput }
         });
-        console.log('Resultado de actualización:', result);
-        toast.success('Especie actualizada correctamente');
       } else {
-        console.log('Input para crear:', formData);
-        const result = await createEspecie({
-          variables: {
-            input: formData
-          }
+        const especieInput: EspecieInput = {
+          descripcion: formData.descripcion
+        };
+
+        await crearEspecie({
+          variables: { input: especieInput }
         });
-        console.log('Resultado de creación:', result);
-        toast.success('Especie creada correctamente');
       }
-      
-      setIsDialogOpen(false);
-      setEditingEspecie(null);
-      setFormData({ descripcion: '' });
+
       refetch();
-    } catch (error: any) {
-      console.error('Error completo:', error);
-      
-      let errorMessage = editingEspecie ? 'Error al actualizar la especie' : 'Error al crear la especie';
-      if (error?.graphQLErrors?.length > 0) {
-        errorMessage = error.graphQLErrors[0].message;
-      } else if (error?.networkError) {
-        errorMessage = `Error de red: ${error.networkError.message}`;
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-      
-      toast.error(errorMessage);
+      resetForm();
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Error al guardar especie:', error);
     }
   };
 
-  const handleEdit = (especie: any) => {
+  const handleEdit = (especie: Especie) => {
     setEditingEspecie(especie);
     setFormData({
       descripcion: especie.descripcion
     });
-    setIsDialogOpen(true);
+    setIsOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta especie?')) {
+    if (window.confirm('¿Estás seguro de que quieres eliminar esta especie?')) {
       try {
-        await deleteEspecie({
+        await eliminarEspecie({
           variables: { id }
         });
-        toast.success('Especie eliminada correctamente');
         refetch();
-      } catch (error: any) {
-        console.error('Error:', error);
-        let errorMessage = 'Error al eliminar la especie';
-        if (error?.graphQLErrors?.length > 0) {
-          errorMessage = error.graphQLErrors[0].message;
-        } else if (error?.message) {
-          errorMessage = error.message;
-        }
-        toast.error(errorMessage);
+      } catch (error) {
+        console.error('Error al eliminar especie:', error);
       }
     }
   };
 
-  const resetForm = () => {
-    setFormData({ descripcion: '' });
-    setEditingEspecie(null);
-  };
-
   if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Especies</h1>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) resetForm();
-        }}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nueva Especie
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {editingEspecie ? 'Editar Especie' : 'Nueva Especie'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="descripcion">Descripción</Label>
-                <Input
-                  id="descripcion"
-                  value={formData.descripcion}
-                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsDialogOpen(false);
-                    resetForm();
-                  }}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit">
-                  {editingEspecie ? 'Actualizar' : 'Crear'}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-
-
+    <div className="container mx-auto py-6">
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Especies</CardTitle>
+          <CardTitle>Gestión de Especies</CardTitle>
+          <CardDescription>
+            Administra las especies de animales atendidas en la clínica veterinaria
+          </CardDescription>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="mr-2 h-4 w-4" />
+                Agregar Especie
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingEspecie ? 'Editar Especie' : 'Agregar Nueva Especie'}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingEspecie ? 'Modifica' : 'Completa'} la información de la especie aquí. Haz clic en guardar cuando termines.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="descripcion">Descripción de la Especie</Label>
+                  <Input
+                    id="descripcion"
+                    value={formData.descripcion}
+                    onChange={(e) => handleInputChange('descripcion', e.target.value)}
+                    placeholder="Ej: Perro, Gato, Conejo, etc."
+                    required
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit">
+                    {editingEspecie ? 'Actualizar' : 'Crear'} Especie
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent>
           <Table>
@@ -174,9 +172,9 @@ export default function EspeciesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {especies.map((especie: any) => (
+              {especies.map((especie) => (
                 <TableRow key={especie.id}>
-                  <TableCell>{especie.id}</TableCell>
+                  <TableCell className="font-medium">{especie.id}</TableCell>
                   <TableCell>{especie.descripcion}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
@@ -185,14 +183,14 @@ export default function EspeciesPage() {
                         size="sm"
                         onClick={() => handleEdit(especie)}
                       >
-                        <Pencil className="w-4 h-4" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="destructive"
                         size="sm"
                         onClick={() => handleDelete(especie.id)}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>
