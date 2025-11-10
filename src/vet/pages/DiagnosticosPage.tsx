@@ -40,25 +40,14 @@ export default function DiagnosticosPage() {
   const [actualizarDiagnostico] = useMutation(ACTUALIZAR_DIAGNOSTICO);
   const [eliminarDiagnostico] = useMutation(ELIMINAR_DIAGNOSTICO);
 
-  // Datos ordenados - versión más robusta
-  const rawDiagnosticos = (diagnosticosData as any)?.diagnosticos || [];
-  const diagnosticos: Diagnostico[] = React.useMemo(() => {
-    return [...rawDiagnosticos]
-      .sort((a: Diagnostico, b: Diagnostico) => {
-        // Intentar primero como números
-        const numA = Number(a.id);
-        const numB = Number(b.id);
-        
-        // Si ambos son números válidos
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return numB - numA; // Descendente
-        }
-        
-        // Si no son números, comparar como strings
-        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
-      });
-  }, [rawDiagnosticos]);
-
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
+  const diagnosticos: Diagnostico[] = [...((diagnosticosData as any)?.diagnosticos || [])]
+    .sort((a: Diagnostico, b: Diagnostico) => {
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
+    });
+  
   const citas: Cita[] = (citasData as any)?.citas || [];
 
   // Filtrar citas completadas (estado 2) que no tengan diagnóstico aún

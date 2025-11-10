@@ -39,24 +39,13 @@ export default function DoctoresPage() {
   const [actualizarDoctor] = useMutation(ACTUALIZAR_DOCTOR);
   const [eliminarDoctor] = useMutation(ELIMINAR_DOCTOR);
 
-  // Datos ordenados - versión más robusta
-  const rawDoctores = (doctoresData as any)?.doctores || [];
-  const doctores: Doctor[] = React.useMemo(() => {
-    return [...rawDoctores]
-      .sort((a: Doctor, b: Doctor) => {
-        // Intentar primero como números
-        const numA = Number(a.id);
-        const numB = Number(b.id);
-        
-        // Si ambos son números válidos
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return numB - numA; // Descendente
-        }
-        
-        // Si no son números, comparar como strings
-        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
-      });
-  }, [rawDoctores]);
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
+  const doctores: Doctor[] = [...((doctoresData as any)?.doctores || [])]
+    .sort((a: Doctor, b: Doctor) => {
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
+    });
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

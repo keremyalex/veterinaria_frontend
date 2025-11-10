@@ -55,13 +55,12 @@ export default function CitasPage() {
   const [actualizarCita] = useMutation(ACTUALIZAR_CITA);
   const [eliminarCita] = useMutation(ELIMINAR_CITA);
 
-  // Datos ordenados
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
   const citas: Cita[] = [...((citasData as any)?.citas || [])]
     .sort((a: Cita, b: Cita) => {
-      // Ordenar por fecha de reserva descendente (más recientes primero)
-      const dateA = new Date(a.fechareserva);
-      const dateB = new Date(b.fechareserva);
-      return dateB.getTime() - dateA.getTime();
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
     });
   
   const doctores: Doctor[] = (doctoresData as any)?.doctores || [];

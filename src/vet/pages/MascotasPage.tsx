@@ -47,24 +47,13 @@ export default function MascotasPage() {
   const [actualizarMascota] = useMutation(ACTUALIZAR_MASCOTA);
   const [eliminarMascota] = useMutation(ELIMINAR_MASCOTA);
 
-  // Datos ordenados - versión más robusta
-  const rawMascotas = (mascotasData as any)?.mascotas || [];
-  const mascotas: Mascota[] = React.useMemo(() => {
-    return [...rawMascotas]
-      .sort((a: Mascota, b: Mascota) => {
-        // Intentar primero como números
-        const numA = Number(a.id);
-        const numB = Number(b.id);
-        
-        // Si ambos son números válidos
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return numB - numA; // Descendente
-        }
-        
-        // Si no son números, comparar como strings
-        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
-      });
-  }, [rawMascotas]);
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
+  const mascotas: Mascota[] = [...((mascotasData as any)?.mascotas || [])]
+    .sort((a: Mascota, b: Mascota) => {
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
+    });
   
   const clientes: Cliente[] = (clientesData as any)?.clientes || [];
   const especies: Especie[] = (especiesData as any)?.especies || [];

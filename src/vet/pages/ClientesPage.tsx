@@ -37,24 +37,13 @@ export default function ClientesPage() {
   const [actualizarCliente] = useMutation(ACTUALIZAR_CLIENTE);
   const [eliminarCliente] = useMutation(ELIMINAR_CLIENTE);
 
-  // Datos ordenados - versión más robusta
-  const rawClientes = (clientesData as any)?.clientes || [];
-  const clientes: Cliente[] = React.useMemo(() => {
-    return [...rawClientes]
-      .sort((a: Cliente, b: Cliente) => {
-        // Intentar primero como números
-        const numA = Number(a.id);
-        const numB = Number(b.id);
-        
-        // Si ambos son números válidos
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return numB - numA; // Descendente
-        }
-        
-        // Si no son números, comparar como strings
-        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
-      });
-  }, [rawClientes]);
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
+  const clientes: Cliente[] = [...((clientesData as any)?.clientes || [])]
+    .sort((a: Cliente, b: Cliente) => {
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
+    });
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

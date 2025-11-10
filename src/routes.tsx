@@ -11,6 +11,8 @@ import HorariosPage from "./vet/pages/HorariosPage";
 import CitasPage from "./vet/pages/CitasPage";
 import DiagnosticosPage from "./vet/pages/DiagnosticosPage";
 import TratamientosPage from "./vet/pages/TratamientosPage";
+import VacunasPage from "./vet/pages/VacunasPage";
+import VacunacionPage from "./vet/pages/VacunacionPage";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { PublicLayout } from "./layouts/PublicLayout";
 import LandingPage from "./vet/pages/LandingPage";
@@ -70,6 +72,14 @@ export const router=createBrowserRouter([
             {
                 path:'tratamientos',
                 Component:TratamientosPage
+            },
+            {
+                path:'vacunas',
+                Component:VacunasPage
+            },
+            {
+                path:'vacunacion',
+                Component:VacunacionPage
             },
         ]
     },

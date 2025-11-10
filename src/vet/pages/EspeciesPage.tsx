@@ -29,24 +29,13 @@ export default function EspeciesPage() {
   const [actualizarEspecie] = useMutation(ACTUALIZAR_ESPECIE);
   const [eliminarEspecie] = useMutation(ELIMINAR_ESPECIE);
 
-  // Datos ordenados - versión más robusta
-  const rawEspecies = (especiesData as any)?.especies || [];
-  const especies: Especie[] = React.useMemo(() => {
-    return [...rawEspecies]
-      .sort((a: Especie, b: Especie) => {
-        // Intentar primero como números
-        const numA = Number(a.id);
-        const numB = Number(b.id);
-        
-        // Si ambos son números válidos
-        if (!isNaN(numA) && !isNaN(numB)) {
-          return numB - numA; // Descendente
-        }
-        
-        // Si no son números, comparar como strings
-        return b.id.toString().localeCompare(a.id.toString(), undefined, { numeric: true });
-      });
-  }, [rawEspecies]);
+  // Datos ordenados por ID ascendente (más antiguos primero: 1, 2, 3...)
+  const especies: Especie[] = [...((especiesData as any)?.especies || [])]
+    .sort((a: Especie, b: Especie) => {
+      const idA = parseInt(a.id, 10);
+      const idB = parseInt(b.id, 10);
+      return idA - idB; // Menor a mayor (más antiguo primero)
+    });
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
