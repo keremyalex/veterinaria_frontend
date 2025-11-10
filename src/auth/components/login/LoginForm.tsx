@@ -14,10 +14,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader } from "lucide-react";
+import { Heart, Loader } from "lucide-react";
 import {useState } from "react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router";
+import backgroundImage from "@/assets/3.webp";
 
 
 type IFormLoginInput = {
@@ -59,102 +60,138 @@ export function LoginForm() {
   }
 
   return (
-    <div>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Bienvenido de regreso</CardTitle>
-          <CardDescription>
-            Ingresa a tu cuenta
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FieldGroup>
-              {/* <Field>
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
+    <div className="min-h-screen flex">
+      {/* Left Side - Image */}
+      <div 
+        className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="absolute inset-0 bg-blue-900/40 flex items-center justify-center">
+          <div className="text-center text-white p-8">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <Heart className="h-12 w-12 text-red-400" />
+              <h1 className="text-4xl font-bold">VetSystem</h1>
+            </div>
+            <p className="text-xl leading-relaxed max-w-md">
+              La plataforma más completa para la gestión de clínicas veterinarias modernas
+            </p>
+            <div className="mt-8 space-y-2">
+              <p className="text-lg">✓ Gestión de citas eficiente</p>
+              <p className="text-lg">✓ Expedientes médicos digitales</p>
+              <p className="text-lg">✓ Control de vacunación</p>
+              <p className="text-lg">✓ Soporte profesional 24/7</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Heart className="h-8 w-8 text-red-500" />
+              <span className="text-2xl font-bold text-gray-800">VetSystem</span>
+            </div>
+          </div>
+
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-2xl font-bold text-gray-800">Bienvenido de regreso</CardTitle>
+              <CardDescription className="text-gray-600">
+                Ingresa a tu cuenta para continuar
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FieldGroup>
+                  <Field>
+                    <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <>
+                          <FieldLabel htmlFor="email" className="text-gray-700">Correo Electrónico</FieldLabel>
+                          <Input
+                            id="email"
+                            type="email"
+                            placeholder="doctor@ejemplo.com"
+                            required
+                            className="h-11"
+                            {...field}
+                          />
+                        </>
+                      )}
                     />
-                  </svg>
-                  Login with Apple
-                </Button>
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
+                    {errors.email && <span className="text-red-600 text-xs">{errors.email.message}</span>}
+                  </Field>
+                  
+                  <Field>
+                    <Controller
+                      control={control}
+                      name="password"
+                      rules={
+                        {
+                          required: { value: true, message: "Contraseña es requerida" },
+                        }}
+                      render={({ field }) => (
+                        <>
+                          <div className="flex items-center">
+                            <FieldLabel htmlFor="password" className="text-gray-700">Contraseña</FieldLabel>
+                            <a
+                              href="#"
+                              className="ml-auto text-sm text-blue-600 hover:text-blue-800 underline-offset-4 hover:underline"
+                            >
+                              ¿Olvidaste tu contraseña?
+                            </a>
+                          </div>
+                          <Input 
+                            id="password" 
+                            type="password" 
+                            className="h-11"
+                            placeholder="••••••••"
+                            {...field} 
+                            required 
+                          />
+                        </>
+                      )}
                     />
-                  </svg>
-                  Login with Google
-                </Button>
-              </Field> */}
-              {/* <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with
-              </FieldSeparator> */}
-              <Field>
-
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <>
-                      <FieldLabel htmlFor="email">Correo</FieldLabel>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        required
-                        {...field}
-                      />
-                    </>
+                    {errors.password && <span className="text-red-600 text-xs">{errors.password.message}</span>}
+                  </Field>
+                  
+                  {loginState.error && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                      <span className="text-red-700 text-sm">Credenciales inválidas. Verifica tu email y contraseña.</span>
+                    </div>
                   )}
-                />
-                {errors.email && <span className="text-red-600 text-xs">{errors.email.message}</span>}
-              </Field>
-              <Field>
-
-                <Controller
-                  control={control}
-                  name="password"
-                  rules={
-                    {
-                      required: { value: true, message: "Contrasena es requerido" },
-                    }}
-                  render={({ field }) => (
-                    <>
-                      <div className="flex items-center">
-                        <FieldLabel htmlFor="password">Contrasena</FieldLabel>
-                        <a
-                          href="#"
-                          className="ml-auto text-sm underline-offset-4 hover:underline"
-                        >
-                          Olvidaste tu contrasena?
-                        </a>
-                      </div>
-                      <Input id="password" type="password" {...field} required />
-                    </>
-                  )}
-                />
-
-                {errors.password && <span className="text-red-600 text-xs">{errors.password.message}</span>}
-              </Field>
-              {loginState.error && (<span className="text-red-600 text-xs p-0">{"Credenciales invalidas,."}</span>)}
-              <Field>
-                <Button disabled={loginState.loading} type="submit"> {loginState.loading && (<Loader className="animate-spin"/>)} Ingresar</Button>
-                <FieldDescription className="text-center">
-                  No tienes una cuenta? <a href="#">Registrate</a>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-      <FieldDescription className="px-6 text-center">
-        Al continuar, aceptas nuestros <a href="#">Terminos de Servicio</a>{" "}
-        y <a href="#">Politicas de Privacidad</a>.
-      </FieldDescription>
+                  
+                  <Field>
+                    <Button 
+                      disabled={loginState.loading} 
+                      type="submit" 
+                      className="w-full h-11 text-base"
+                      size="lg"
+                    > 
+                      {loginState.loading && (<Loader className="animate-spin mr-2 h-4 w-4"/>)} 
+                      {loginState.loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                    </Button>
+                    
+                    <FieldDescription className="text-center text-gray-600">
+                      ¿No tienes una cuenta? <a href="#" className="text-blue-600 hover:text-blue-800 underline">Regístrate</a>
+                    </FieldDescription>
+                  </Field>
+                </FieldGroup>
+              </form>
+            </CardContent>
+          </Card>
+          
+          <FieldDescription className="px-6 text-center mt-6 text-gray-500">
+            Al continuar, aceptas nuestros <a href="#" className="text-blue-600 hover:underline">Términos de Servicio</a>{" "}
+            y <a href="#" className="text-blue-600 hover:underline">Políticas de Privacidad</a>.
+          </FieldDescription>
+        </div>
+      </div>
     </div>
   )
 }

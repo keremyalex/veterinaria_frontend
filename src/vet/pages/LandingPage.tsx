@@ -15,6 +15,9 @@ import {
   MapPin
 } from "lucide-react";
 import { Link } from "react-router";
+import image1 from "@/assets/1.webp";
+import image2 from "@/assets/2.webp";
+import image4 from "@/assets/4.webp";
 
 export default function LandingPage() {
   return (
@@ -42,23 +45,42 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
-              Sistema de Gestión 
-              <span className="text-blue-600"> Veterinaria</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Optimiza tu clínica veterinaria con nuestro sistema integral de gestión. 
-              Administra citas, expedientes médicos, inventario y más desde una sola plataforma.
-            </p>
-            <div className="flex justify-center">
-              <Button size="lg" className="text-lg px-8 py-6" asChild>
-                <Link to="/auth/login">
-                  Comenzar Ahora
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6">
+                Sistema de Gestión 
+                <span className="text-blue-600"> Veterinaria</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Optimiza tu clínica veterinaria con nuestro sistema integral de gestión. 
+                Administra citas, expedientes médicos, inventario y más desde una sola plataforma.
+              </p>
+              <div className="flex justify-start">
+                <Button size="lg" className="text-lg px-8 py-6" asChild>
+                  <Link to="/auth/login">
+                    Comenzar Ahora
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
+                <img 
+                  src={image2} 
+                  alt="Tecnología veterinaria" 
+                  className="rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full"
+                />
+                <img 
+                  src={image4} 
+                  alt="Cuidado de mascotas" 
+                  className="rounded-lg shadow-lg hover:shadow-xl transition-shadow w-full"
+                />
+              </div>
+              {/* Elementos decorativos */}
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-200 rounded-full opacity-50"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-green-200 rounded-full opacity-50"></div>
             </div>
           </div>
         </div>
@@ -141,77 +163,84 @@ export default function LandingPage() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 px-4 bg-gray-50">
-        <div className="container mx-auto">
+      <section id="services" className="py-20 px-4 relative overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${image1})` 
+          }}
+        />
+        <div className="relative z-10 container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            <h2 className="text-4xl font-bold text-white mb-4">
               Nuestros Servicios
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-200 max-w-2xl mx-auto">
               Soluciones completas para modernizar tu práctica veterinaria
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20">
+              <h3 className="text-2xl font-bold text-white mb-6">
                 ¿Por qué elegir VetSystem?
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <CheckCircle className="h-6 w-6 text-green-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-gray-800">Fácil de usar</h4>
-                    <p className="text-gray-600">Interfaz intuitiva diseñada específicamente para veterinarios</p>
+                    <h4 className="font-semibold text-white">Fácil de usar</h4>
+                    <p className="text-gray-200">Interfaz intuitiva diseñada específicamente para veterinarios</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <CheckCircle className="h-6 w-6 text-green-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-gray-800">Seguro y confiable</h4>
-                    <p className="text-gray-600">Tus datos están protegidos con los más altos estándares de seguridad</p>
+                    <h4 className="font-semibold text-white">Seguro y confiable</h4>
+                    <p className="text-gray-200">Tus datos están protegidos con los más altos estándares de seguridad</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <CheckCircle className="h-6 w-6 text-green-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-gray-800">Soporte 24/7</h4>
-                    <p className="text-gray-600">Nuestro equipo está disponible para ayudarte cuando lo necesites</p>
+                    <h4 className="font-semibold text-white">Soporte 24/7</h4>
+                    <p className="text-gray-200">Nuestro equipo está disponible para ayudarte cuando lo necesites</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle className="h-6 w-6 text-green-500 shrink-0 mt-0.5" />
+                  <CheckCircle className="h-6 w-6 text-green-400 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-gray-800">Actualizaciones constantes</h4>
-                    <p className="text-gray-600">Mejoras continuas basadas en feedback de veterinarios</p>
+                    <h4 className="font-semibold text-white">Actualizaciones constantes</h4>
+                    <p className="text-gray-200">Mejoras continuas basadas en feedback de veterinarios</p>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              <Card className="text-center p-6">
+              <Card className="text-center p-6 bg-white/90 backdrop-blur-sm border-white/20">
                 <CardContent className="pt-0">
                   <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
-                  <div className="text-gray-600">Clínicas Activas</div>
+                  <div className="text-gray-700">Clínicas Activas</div>
                 </CardContent>
               </Card>
-              <Card className="text-center p-6">
+              <Card className="text-center p-6 bg-white/90 backdrop-blur-sm border-white/20">
                 <CardContent className="pt-0">
                   <div className="text-3xl font-bold text-green-600 mb-2">10K+</div>
-                  <div className="text-gray-600">Mascotas Registradas</div>
+                  <div className="text-gray-700">Mascotas Registradas</div>
                 </CardContent>
               </Card>
-              <Card className="text-center p-6">
+              <Card className="text-center p-6 bg-white/90 backdrop-blur-sm border-white/20">
                 <CardContent className="pt-0">
                   <div className="text-3xl font-bold text-purple-600 mb-2">99.9%</div>
-                  <div className="text-gray-600">Tiempo de Actividad</div>
+                  <div className="text-gray-700">Tiempo de Actividad</div>
                 </CardContent>
               </Card>
-              <Card className="text-center p-6">
+              <Card className="text-center p-6 bg-white/90 backdrop-blur-sm border-white/20">
                 <CardContent className="pt-0">
                   <div className="text-3xl font-bold text-orange-600 mb-2">4.9★</div>
-                  <div className="text-gray-600">Calificación</div>
+                  <div className="text-gray-700">Calificación</div>
                 </CardContent>
               </Card>
             </div>
