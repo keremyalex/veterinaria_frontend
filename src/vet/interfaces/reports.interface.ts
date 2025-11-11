@@ -138,6 +138,7 @@ export interface ReporteCompleto {
 export interface EstadoReporte {
   id: string;
   tipo: TipoReporte;
+  formato: FormatoReporte;
   estado: 'GENERANDO' | 'COMPLETADO' | 'ERROR' | 'CANCELADO';
   progreso: number;
   fechaCreacion: string;

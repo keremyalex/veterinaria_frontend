@@ -125,12 +125,14 @@ export const ReportsPage: React.FC = () => {
       
       // Generar ID único para el reporte
       const idReporte = `RPT-${Date.now()}`;
-      const urlDescarga = `/reports/${idReporte}.${formatoReporte.toLowerCase()}`;
+      const extension = getFileExtension(formatoReporte);
+      const urlDescarga = `/reports/${idReporte}.${extension}`;
       
       // Agregar al historial
       const nuevoReporte: EstadoReporte = {
         id: idReporte,
         tipo: tipo,
+        formato: formatoReporte,
         estado: 'COMPLETADO',
         progreso: 100,
         fechaCreacion: new Date().toISOString(),
@@ -155,11 +157,152 @@ export const ReportsPage: React.FC = () => {
     }
   };
 
+  const generateMockFileContent = (reporte: EstadoReporte, formatoArchivo: FormatoReporte) => {
+    const fecha = new Date().toLocaleString('es-ES');
+    const datos = datosReporte || {};
+    
+    switch (formatoArchivo) {
+      case 'PDF':
+        // Para PDF, generamos un contenido que simule ser un PDF
+        return `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+>>
+endobj
+
+4 0 obj
+<<
+/Length 44
+>>
+stream
+BT
+/F1 12 Tf
+72 720 Td
+(Reporte ${reporte.tipo} - ${fecha}) Tj
+ET
+endstream
+endobj
+
+xref
+0 5
+0000000000 65535 f 
+0000000015 00000 n 
+0000000074 00000 n 
+0000000120 00000 n 
+0000000179 00000 n 
+trailer
+<<
+/Size 5
+/Root 1 0 R
+>>
+startxref
+274
+%%EOF`;
+
+      case 'EXCEL':
+        // Para Excel, generamos contenido CSV que Excel puede abrir
+        return `Reporte ${reporte.tipo} - ${fecha}\n\nResumen:\nTipo,${reporte.tipo}\nFecha,${fecha}\nID,${reporte.id}\n\n` +
+               `Datos:\n${Object.entries(datos).map(([key, value]) => `${key},${value}`).join('\n')}`;
+
+      case 'CSV':
+        return `Tipo,Fecha,ID,Valor\n${reporte.tipo},${fecha},${reporte.id},Datos del reporte\n` +
+               `${Object.entries(datos).map(([key, value]) => `${key},${value},,`).join('\n')}`;
+
+      case 'JSON':
+        return JSON.stringify({
+          reporte: {
+            id: reporte.id,
+            tipo: reporte.tipo,
+            fechaGeneracion: fecha,
+            datos: datos
+          }
+        }, null, 2);
+
+      default:
+        return `Reporte ${reporte.tipo}\nGenerado: ${fecha}\nID: ${reporte.id}`;
+    }
+  };
+
+  const downloadFile = (content: string, filename: string, mimeType: string) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const getMimeType = (formato: FormatoReporte): string => {
+    switch (formato) {
+      case 'PDF':
+        return 'application/pdf';
+      case 'EXCEL':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      case 'CSV':
+        return 'text/csv';
+      case 'JSON':
+        return 'application/json';
+      default:
+        return 'text/plain';
+    }
+  };
+
+  const getFileExtension = (formato: FormatoReporte): string => {
+    switch (formato) {
+      case 'PDF':
+        return 'pdf';
+      case 'EXCEL':
+        return 'xlsx';
+      case 'CSV':
+        return 'csv';
+      case 'JSON':
+        return 'json';
+      default:
+        return 'txt';
+    }
+  };
+
   const handleDescargarReporte = (reporte: EstadoReporte) => {
     if (reporte.urlDescarga) {
-      // En una app real, esto descargaría el archivo
-      window.open(reporte.urlDescarga, '_blank');
-      console.log('Descargando reporte:', reporte.id);
+      // Usar el formato almacenado en lugar de extraerlo de la URL
+      const formatoArchivo = reporte.formato;
+      
+      // Generar contenido del archivo
+      const contenido = generateMockFileContent(reporte, formatoArchivo);
+      
+      // Generar nombre del archivo
+      const fileExtension = getFileExtension(formatoArchivo);
+      const filename = `${reporte.id}-${reporte.tipo.toLowerCase()}.${fileExtension}`;
+      
+      // Obtener tipo MIME
+      const mimeType = getMimeType(formatoArchivo);
+      
+      // Descargar archivo
+      downloadFile(contenido, filename, mimeType);
+      
+      console.log(`Descargando reporte: ${reporte.id} en formato ${formatoArchivo}`);
     }
   };
 

@@ -163,6 +163,7 @@ export const mockHistorialReportes: EstadoReporte[] = [
   {
     id: "RPT-2024-11-001",
     tipo: "FINANCIERO",
+    formato: "PDF",
     estado: "COMPLETADO",
     progreso: 100,
     fechaCreacion: "2024-11-08T10:30:00Z",
@@ -172,15 +173,17 @@ export const mockHistorialReportes: EstadoReporte[] = [
   {
     id: "RPT-2024-11-002", 
     tipo: "CLINICO",
+    formato: "EXCEL",
     estado: "COMPLETADO",
     progreso: 100,
     fechaCreacion: "2024-11-07T14:15:00Z",
     fechaCompletado: "2024-11-07T14:18:12Z",
-    urlDescarga: "/reports/RPT-2024-11-002.pdf"
+    urlDescarga: "/reports/RPT-2024-11-002.xlsx"
   },
   {
     id: "RPT-2024-11-003",
     tipo: "OPERACIONAL", 
+    formato: "CSV",
     estado: "GENERANDO",
     progreso: 65,
     fechaCreacion: "2024-11-08T16:45:00Z"
@@ -188,6 +191,7 @@ export const mockHistorialReportes: EstadoReporte[] = [
   {
     id: "RPT-2024-10-028",
     tipo: "INVENTARIO",
+    formato: "JSON",
     estado: "ERROR",
     progreso: 0,
     fechaCreacion: "2024-10-28T09:20:00Z",
