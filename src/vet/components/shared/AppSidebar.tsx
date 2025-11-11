@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   UserCog,
   BarChart3,
+  FileText,
 } from "lucide-react"
 
 import {
@@ -40,6 +41,18 @@ const data = {
           name: "Resumen",
           url: "/vet/dashboard",
           icon: BarChart3,
+        },
+      ],
+    },
+    {
+      title: "Reportes",
+      url: "#",
+      icon: FileText,
+      items: [
+        {
+          name: "Generar Reportes",
+          url: "/vet/reportes",
+          icon: FileText,
         },
       ],
     },

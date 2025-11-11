@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { VetLayout } from "./vet/layouts/VetLayout";
 import DashboardPage from "./vet/pages/DashboardPage";
+import { ReportsPage } from "./vet/pages/ReportsPage";
 import { AuthLayout } from "./auth/layouts/AuthLayout";
 import { LoginPage } from "./auth/pages/LoginPage";
 import DoctoresPage from "./vet/pages/DoctoresPage";
@@ -42,6 +43,10 @@ export const router=createBrowserRouter([
             {
                 path:'dashboard',
                 Component:DashboardPage
+            },
+            {
+                path:'reportes',
+                Component:ReportsPage
             },
             {
                 path:'doctores',
