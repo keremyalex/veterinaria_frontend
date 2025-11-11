@@ -12,6 +12,7 @@ import {
   Settings,
   ShoppingCart,
   UserCog,
+  BarChart3,
 } from "lucide-react"
 
 import {
@@ -30,10 +31,22 @@ import { useAuthStore } from "@/auth/store/auth.store"
 const data = {
   navMain: [
     {
+      title: "Dashboard",
+      url: "#",
+      icon: BarChart3,
+      isActive: true,
+      items: [
+        {
+          name: "Resumen",
+          url: "/vet/dashboard",
+          icon: BarChart3,
+        },
+      ],
+    },
+    {
       title: "Gestión Clínica",
       url: "#",
       icon: Stethoscope,
-      isActive: true,
       items: [
         {
           name: "Doctores",
