@@ -15,7 +15,10 @@ import TratamientosPage from "./vet/pages/TratamientosPage";
 import VacunasPage from "./vet/pages/VacunasPage";
 import VacunacionPage from "./vet/pages/VacunacionPage";
 import { UsuariosPage } from "./vet/pages/UsuariosPage";
-import { VentasPage } from "./vet/pages/VentasPage";
+import { VentasDashboardPage } from "./vet/pages/VentasDashboardPage";
+import { ProductsPage } from "./vet/pages/ProductsPage";
+import { CategoriasPage } from "./vet/pages/CategoriasPage";
+import { MarcasPage } from "./vet/pages/MarcasPage";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { PublicLayout } from "./layouts/PublicLayout";
 import LandingPage from "./vet/pages/LandingPage";
@@ -94,7 +97,19 @@ export const router=createBrowserRouter([
             },
             {
                 path:'ventas',
-                Component:VentasPage
+                Component:VentasDashboardPage
+            },
+            {
+                path:'productos',
+                Component:ProductsPage
+            },
+            {
+                path:'categorias',
+                Component:CategoriasPage
+            },
+            {
+                path:'marcas',
+                Component:MarcasPage
             },
         ]
     },

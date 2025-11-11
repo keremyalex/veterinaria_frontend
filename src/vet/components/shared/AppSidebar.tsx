@@ -14,6 +14,10 @@ import {
   UserCog,
   BarChart3,
   FileText,
+  Package,
+  Tag,
+  Award,
+  TrendingUp,
 } from "lucide-react"
 
 import {
@@ -131,9 +135,24 @@ const data = {
       icon: ShoppingCart,
       items: [
         {
-          name: "Panel de Ventas",
+          name: "Dashboard Ventas",
           url: "/vet/ventas",
-          icon: ShoppingCart,
+          icon: TrendingUp,
+        },
+        {
+          name: "Productos",
+          url: "/vet/productos",
+          icon: Package,
+        },
+        {
+          name: "Categorías",
+          url: "/vet/categorias",
+          icon: Tag,
+        },
+        {
+          name: "Marcas",
+          url: "/vet/marcas",
+          icon: Award,
         },
       ],
     },
